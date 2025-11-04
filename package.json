@@ -9,10 +9,19 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@walletconnect/modal-react-native": "^1.1.0",
+    "@walletconnect/react-native-compat": "^2.23.0",
+    "@walletconnect/sign-client": "^2.23.0",
+    "bs58": "^6.0.0",
     "expo": "~54.0.22",
+    "expo-constants": "~18.0.10",
     "expo-status-bar": "~3.0.8",
     "react": "19.1.0",
-    "react-native": "0.81.5"
+    "react-native": "0.81.5",
+    "react-native-get-random-values": "~1.11.0",
+    "react-native-svg": "15.12.1",
+    "react-native-url-polyfill": "^3.0.0",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
