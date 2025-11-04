@@ -12,6 +12,7 @@
     "@walletconnect/modal-react-native": "^1.1.0",
     "@walletconnect/react-native-compat": "^2.23.0",
     "@walletconnect/sign-client": "^2.23.0",
+    "babel-preset-expo": "~54.0.0",
     "bs58": "^6.0.0",
     "expo": "~54.0.22",
     "expo-constants": "~18.0.10",
