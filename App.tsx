@@ -1,116 +1,174 @@
-import 'react-native-get-random-values';
-import 'react-native-url-polyfill/auto';
-import { WalletConnectModal, useWalletConnectModal } from '@walletconnect/modal-react-native';
-import Constants from 'expo-constants';
-import React from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, StatusBar } from 'react-native';
 
-// --- 1. Get Project ID from app.json ---
-const WC_PROJECT_ID = (Constants?.expoConfig?.extra as any)?.EXPO_PUBLIC_WC_PROJECT_ID ?? '';
+import { styles } from './style';
+import WelcomeScreen from './components/screens/WelcomeScreen';
+import CreateSlidesScreen from './components/screens/CreateSlidesScreen';
+import MnemonicScreen from './components/screens/MnemonicScreen';
+import PasscodeScreen from './components/screens/PasscodeScreen';
+import BiometricsScreen from './components/screens/BiometricsScreen';
+import NotificationsScreen from './components/screens/NotificationsScreen';
+import MainWalletScreen from './components/screens/MainWalletScreen';
+import type { Wallet } from './type';
 
-// --- 2. Define Connection Metadata ---
-const providerMetadata = {
-  name: 'Vertra Community',
-  description: 'Community app sign-in with Solana wallet.',
-  url: 'https:vertra.app',
-  icons: ['https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/solana.svg'],
-  redirect: {
-    native: 'vertra-community://',
-    universal: 'https:vertra.app',
-  },
-};
+type Screen =
+  | 'welcome'
+  | 'createSlides'
+  | 'showMnemonic'
+  | 'passcode'
+  | 'biometrics'
+  | 'notifications'
+  | 'main';
 
-// --- 3. Define Session Parameters (THIS IS THE FIX) ---
-// The key is 'namespaces', not 'requiredNamespaces'
-const sessionParams = {
-  namespaces: {
-    solana: {
-      chains: ['solana:103'], // devnet: 103, mainnet: 101
-      methods: ['solana_signTransaction', 'solana_signMessage'],
-      events: [],
-    },
-  },
-};
+// TEMP: demo mnemonic. DO NOT use this for real funds.
+const DEMO_MNEMONIC: string[] = [
+  'gravity',
+  'museum',
+  'canvas',
+  'elevator',
+  'signal',
+  'safety',
+  'token',
+  'feather',
+  'window',
+  'vertra',
+  'occupant',
+  'network',
+  'ocean',
+  'bridge',
+  'hammer',
+  'ledger',
+  'vault',
+  'silver',
+  'random',
+  'planet',
+  'future',
+  'metro',
+  'cable',
+  'vector',
+];
 
 export default function App() {
-  const { isConnected, address, open, close } = useWalletConnectModal();
+  const [screen, setScreen] = useState<Screen>('welcome');
+  const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [passcode, setPasscode] = useState('');
+  const [biometricsChoice, setBiometricsChoice] = useState<'yes' | 'no' | null>(null);
+  const [notificationsChoice, setNotificationsChoice] = useState<'yes' | 'no' | null>(
+    null,
+  );
+
+  // Auto-advance slides every 5 seconds
+  useEffect(() => {
+    if (screen !== 'createSlides') return;
+
+    setSlideIndex(0);
+    const timer = setInterval(() => {
+      setSlideIndex(prev => {
+        if (prev >= 2) {
+          clearInterval(timer);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [screen]);
+
+  const handleStartCreateWallet = () => {
+    setWallet({ mnemonic: DEMO_MNEMONIC });
+    setScreen('createSlides');
+  };
+
+  const handleSlidesContinue = () => setScreen('showMnemonic');
+  const handleMnemonicContinue = () => setScreen('passcode');
+
+  const handlePasscodeContinue = () => {
+    setWallet(prev => (prev ? { ...prev, passcode } : prev));
+    setScreen('biometrics');
+  };
+
+  const handleBiometricsContinue = () => {
+    setWallet(prev =>
+      prev ? { ...prev, biometricsEnabled: biometricsChoice === 'yes' } : prev,
+    );
+    setScreen('notifications');
+  };
+
+  const handleNotificationsContinue = () => {
+    setWallet(prev =>
+      prev ? { ...prev, notificationsEnabled: notificationsChoice === 'yes' } : prev,
+    );
+    setScreen('main');
+  };
+
+  let content: React.ReactNode = null;
+
+  switch (screen) {
+    case 'welcome':
+      content = (
+        <WelcomeScreen
+          onCreateWallet={handleStartCreateWallet}
+          onImportWallet={() => {
+            alert('Import wallet coming soon.');
+          }}
+        />
+      );
+      break;
+    case 'createSlides':
+      content = (
+        <CreateSlidesScreen
+          slideIndex={slideIndex}
+          onNextSlide={() => setSlideIndex(i => Math.min(2, i + 1))}
+          onContinue={handleSlidesContinue}
+        />
+      );
+      break;
+    case 'showMnemonic':
+      content = (
+        <MnemonicScreen
+          mnemonic={wallet?.mnemonic ?? DEMO_MNEMONIC}
+          onContinue={handleMnemonicContinue}
+        />
+      );
+      break;
+    case 'passcode':
+      content = (
+        <PasscodeScreen
+          passcode={passcode}
+          onChangePasscode={setPasscode}
+          onContinue={handlePasscodeContinue}
+        />
+      );
+      break;
+    case 'biometrics':
+      content = (
+        <BiometricsScreen
+          choice={biometricsChoice}
+          onChoose={setBiometricsChoice}
+          onContinue={handleBiometricsContinue}
+        />
+      );
+      break;
+    case 'notifications':
+      content = (
+        <NotificationsScreen
+          choice={notificationsChoice}
+          onChoose={setNotificationsChoice}
+          onContinue={handleNotificationsContinue}
+        />
+      );
+      break;
+    case 'main':
+      content = <MainWalletScreen wallet={wallet} />;
+      break;
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.appRoot}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.card}>
-        <Text style={styles.title}>Vertra Community</Text>
-        <Text style={styles.subtitle}>Sign in with your Solana wallet</Text>
-
-        {!isConnected ? (
-          <TouchableOpacity
-            style={[styles.btn, styles.btnPrimary]}
-            // open() call is empty
-            onPress={() => open()}
-          >
-            <Text style={styles.btnText}>Connect Phantom</Text>
-          </TouchableOpacity>
-        ) : (
-          <>
-            <View style={styles.addressBox}>
-              <Text style={styles.label}>Connected</Text>
-              <Text style={styles.addr}>{short(address)}</Text>
-            </View>
-            <TouchableOpacity style={[styles.btn, styles.btnGhost]} onPress={() => close()}>
-              <Text style={styles.btnText}>Disconnect</Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
-
-      {/* --- 4. Render the Modal (THIS IS THE FIX) --- */}
-      <WalletConnectModal
-        projectId={WC_PROJECT_ID}
-        providerMetadata={providerMetadata}
-        sessionParams={sessionParams} // Pass the 'namespaces' object here
-      />
+      {content}
     </SafeAreaView>
   );
 }
-
-// Helper function to shorten the address
-function short(pk?: string, n = 6) {
-  if (!pk) return '—';
-  return pk.length <= 2 * n ? pk : `${pk.slice(0, n)}…${pk.slice(-n)}`;
-}
-
-// --- Styles (no changes) ---
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0b0b0f',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 480,
-    backgroundColor: '#111118',
-    borderColor: '#23232f',
-    borderWidth: 1,
-    borderRadius: 16,
-    padding: 20,
-  },
-  title: { color: 'white', fontSize: 22, fontWeight: '800' },
-  subtitle: { color: '#9aa0aa', marginTop: 6, marginBottom: 16 },
-  addressBox: {
-    backgroundColor: '#0f1320',
-    borderColor: '#27314b',
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 12,
-  },
-  label: { color: '#8ea0c0', fontSize: 12, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.5 },
-  addr: { color: 'white', fontFamily: 'monospace', fontSize: 16 },
-  btn: { borderRadius: 12, paddingVertical: 14, alignItems: 'center' },
-  btnPrimary: { backgroundColor: '#6c5ce7' },
-  btnGhost: { backgroundColor: '#1b1b24', borderWidth: 1, borderColor: '#2a2a3a' },
-  btnText: { color: 'white', fontWeight: '700' },
-});
