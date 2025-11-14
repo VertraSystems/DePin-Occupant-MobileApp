@@ -1,42 +1,69 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  GestureResponderEvent,
+  Dimensions,
+} from 'react-native';
 import { styles } from '../../style';
 import { PrimaryButton } from '../Buttons';
 
 type Props = {
   slideIndex: number;
   onNextSlide: () => void;
+  onPrevSlide: () => void;
   onContinue: () => void;
 };
 
-const slides = [
+const SLIDES = [
   {
-    title: 'Self-Custody',
-    subtitle: 'Your wallet, your keys. Think of it like a Ledger vault in your pocket.',
     icon: '📟',
+    title: 'Self-Custody',
+    body: 'Your wallet, your keys. Think of it like a Ledger vault in your pocket.',
   },
   {
-    title: 'Vault Locked',
-    subtitle: 'Your keys stay locked away. The app only uses them with your approval.',
     icon: '🧱',
+    title: 'Vault Locked',
+    body: 'Your keys stay locked away. The app only uses them with your approval.',
   },
   {
+    icon: '🖊️',
     title: 'Write It Down',
-    subtitle:
-      'Grab a pen and paper. You’ll get a secret phrase that can recover your wallet.',
-    icon: '✒️',
+    body: 'Grab a pen and paper. You’ll get a secret phrase that can recover your wallet.',
   },
 ];
 
 const CreateSlidesScreen: React.FC<Props> = ({
   slideIndex,
   onNextSlide,
+  onPrevSlide,
   onContinue,
 }) => {
-  const slide = slides[slideIndex];
+  const clampedIndex = Math.min(Math.max(slideIndex, 0), SLIDES.length - 1);
+  const slide = SLIDES[clampedIndex];
 
-  const handleTap = () => {
-    if (slideIndex < slides.length - 1) {
+  const handleTap = (evt: GestureResponderEvent) => {
+    const { locationX } = evt.nativeEvent;
+    const screenWidth = Dimensions.get('window').width;
+
+    if (locationX < screenWidth / 2) {
+      // Left side → previous slide
+      if (clampedIndex > 0) {
+        onPrevSlide();
+      }
+    } else {
+      // Right side → next slide or finish
+      if (clampedIndex < SLIDES.length - 1) {
+        onNextSlide();
+      } else {
+        onContinue();
+      }
+    }
+  };
+
+  const handlePrimaryPress = () => {
+    if (clampedIndex < SLIDES.length - 1) {
       onNextSlide();
     } else {
       onContinue();
@@ -45,32 +72,34 @@ const CreateSlidesScreen: React.FC<Props> = ({
 
   return (
     <View style={styles.screenRoot}>
-      {/* Instagram-style progress bars */}
+      {/* Story-style progress bars */}
       <View style={styles.storyProgressRow}>
-        {slides.map((_, i) => (
+        {SLIDES.map((_, idx) => (
           <View
-            key={i}
+            key={idx}
             style={[
               styles.storyBar,
-              i <= slideIndex ? styles.storyBarActive : undefined,
+              idx <= clampedIndex && styles.storyBarActive,
             ]}
           />
         ))}
       </View>
 
-      {/* Tappable slide card (tap anywhere to advance) */}
-      <Pressable style={styles.slideCard} onPress={handleTap}>
-        <Text style={styles.slideIcon}>{slide.icon}</Text>
-        <Text style={styles.slideTitle}>{slide.title}</Text>
-        <Text style={styles.slideSubtitle}>{slide.subtitle}</Text>
+      {/* Tap area – left = back, right = next */}
+      <Pressable style={styles.slideTapArea} onPress={handleTap}>
+        <View style={styles.slideCardContainer}>
+          <View style={styles.slideCard}>
+            <Text style={styles.slideIcon}>{slide.icon}</Text>
+            <Text style={styles.slideTitle}>{slide.title}</Text>
+            <Text style={styles.slideSubtitle}>{slide.body}</Text>
+          </View>
+        </View>
       </Pressable>
 
-      {/* Only show big CTA on the last slide */}
-      {slideIndex === slides.length - 1 && (
-        <View style={styles.buttonRow}>
-          <PrimaryButton label="Continue" onPress={onContinue} />
-        </View>
-      )}
+      <PrimaryButton
+        label={clampedIndex < SLIDES.length - 1 ? 'Continue' : 'I wrote it down'}
+        onPress={handlePrimaryPress}
+      />
     </View>
   );
 };

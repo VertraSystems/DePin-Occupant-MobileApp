@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { styles } from './style';
 import WelcomeScreen from './components/screens/WelcomeScreen';
@@ -20,7 +21,7 @@ type Screen =
   | 'notifications'
   | 'main';
 
-// TEMP: demo mnemonic. DO NOT use this for real funds.
+// TEMP DEMO MNEMONIC
 const DEMO_MNEMONIC: string[] = [
   'gravity',
   'museum',
@@ -53,10 +54,13 @@ export default function App() {
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [slideIndex, setSlideIndex] = useState(0);
   const [passcode, setPasscode] = useState('');
-  const [biometricsChoice, setBiometricsChoice] = useState<'yes' | 'no' | null>(null);
-  const [notificationsChoice, setNotificationsChoice] = useState<'yes' | 'no' | null>(
-    null,
-  );
+  const [biometricsChoice, setBiometricsChoice] =
+    useState<'yes' | 'no' | null>(null);
+  const [notificationsChoice, setNotificationsChoice] =
+    useState<'yes' | 'no' | null>(null);
+
+  // NEW: did the user skip viewing the mnemonic?
+  const [skippedMnemonic, setSkippedMnemonic] = useState<boolean | null>(null);
 
   // Auto-advance slides every 5 seconds
   useEffect(() => {
@@ -82,7 +86,18 @@ export default function App() {
   };
 
   const handleSlidesContinue = () => setScreen('showMnemonic');
-  const handleMnemonicContinue = () => setScreen('passcode');
+
+  // Called when they saw + confirmed the phrase
+  const handleMnemonicConfirmed = () => {
+    setSkippedMnemonic(false);
+    setScreen('passcode');
+  };
+
+  // Called when they hit "Skip for now"
+  const handleMnemonicSkipped = () => {
+    setSkippedMnemonic(true);
+    setScreen('passcode');
+  };
 
   const handlePasscodeContinue = () => {
     setWallet(prev => (prev ? { ...prev, passcode } : prev));
@@ -116,32 +131,41 @@ export default function App() {
         />
       );
       break;
+
     case 'createSlides':
       content = (
         <CreateSlidesScreen
           slideIndex={slideIndex}
           onNextSlide={() => setSlideIndex(i => Math.min(2, i + 1))}
+          onPrevSlide={() => setSlideIndex(i => Math.max(0, i - 1))}
           onContinue={handleSlidesContinue}
         />
       );
       break;
+
     case 'showMnemonic':
       content = (
         <MnemonicScreen
           mnemonic={wallet?.mnemonic ?? DEMO_MNEMONIC}
-          onContinue={handleMnemonicContinue}
+          onConfirmWritten={handleMnemonicConfirmed}
+          onSkip={handleMnemonicSkipped}
         />
       );
       break;
+
     case 'passcode':
       content = (
         <PasscodeScreen
           passcode={passcode}
           onChangePasscode={setPasscode}
           onContinue={handlePasscodeContinue}
+          // Only allow going back if they skipped
+          canGoBackToMnemonic={skippedMnemonic === true}
+          onGoBackToMnemonic={() => setScreen('showMnemonic')}
         />
       );
       break;
+
     case 'biometrics':
       content = (
         <BiometricsScreen
@@ -151,6 +175,7 @@ export default function App() {
         />
       );
       break;
+
     case 'notifications':
       content = (
         <NotificationsScreen
@@ -160,6 +185,7 @@ export default function App() {
         />
       );
       break;
+
     case 'main':
       content = <MainWalletScreen wallet={wallet} />;
       break;

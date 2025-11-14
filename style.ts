@@ -5,56 +5,52 @@ export const styles = StyleSheet.create({
 
   appRoot: {
     flex: 1,
-    backgroundColor: '#020307', // default dark background
+    backgroundColor: '#020307',
   },
 
   screenRoot: {
     flex: 1,
     backgroundColor: '#020307',
     paddingHorizontal: 20,
-    paddingTop: 52,     // overall content slightly down from very top
+    paddingTop: 52,
     paddingBottom: 32,
     justifyContent: 'flex-start',
   },
 
-  /* ---------- HERO / BRANDING (WELCOME SCREEN) ---------- */
+  /* ---------- WELCOME / HERO ---------- */
 
-  // Glowing green layer that sits behind the hero card
-  heroGlow: {
-    position: 'absolute',
-    top: 32,
-    left: 20,
-    right: 20,
-    height: 280,                 // taller glow area
-    borderRadius: 36,
-    backgroundColor: '#00d26a',
-    opacity: 0,
-    shadowColor: '#00ff88',
-    shadowOpacity: 0.7,
-    shadowRadius: 42,
-    shadowOffset: { width: 0, height: 0 },
-  },
-
-  heroCard: {
-    backgroundColor: '#00d26a',  // green card
-    borderRadius: 36,
-    paddingVertical: 56,         // taller card
-    paddingHorizontal: 24,
-    marginBottom: 36,
+  logoContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#00ff88',
-    shadowOpacity: 0.35,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 10,
+    marginTop: 40,
+    marginBottom: 32,
   },
 
   heroImage: {
-    width: 170,                  // slightly smaller logo
-    height: 170,
+    width: 200,
+    height: 200,
     resizeMode: 'contain',
-    alignSelf: 'center',
+  },
+
+  logoPressTarget: {
+    width: 200,
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+
+  logoRipple: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: '#00ff88',
+    zIndex: 2,
+  },
+
+  contentBelowLogo: {
+    marginTop: 16,
   },
 
   appName: {
@@ -62,8 +58,8 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     textTransform: 'uppercase',
     letterSpacing: 1.6,
-    marginTop: 16,               // pushes header down from the card
-    marginBottom: 6,
+    marginBottom: 8,
+    textAlign: 'center',
   },
 
   heroText: {
@@ -71,6 +67,7 @@ export const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '800',
     marginBottom: 8,
+    textAlign: 'center',
   },
 
   heroHighlight: {
@@ -80,10 +77,10 @@ export const styles = StyleSheet.create({
   heroSub: {
     color: '#a4b0c0',
     fontSize: 14,
-    marginBottom: 0,
+    marginBottom: 24,
+    textAlign: 'center',
   },
 
-  // legacy logo (unused but kept)
   logoCircle: {
     width: 64,
     height: 64,
@@ -93,6 +90,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 16,
   },
+
   logoText: {
     color: '#ffffff',
     fontSize: 28,
@@ -103,7 +101,6 @@ export const styles = StyleSheet.create({
 
   buttonColumn: {
     gap: 12,
-    marginTop: 44,              // buttons sit lower on the screen
   },
 
   buttonRow: {
@@ -118,6 +115,7 @@ export const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
   },
+
   primaryButtonText: {
     color: '#020307',
     fontSize: 16,
@@ -126,12 +124,13 @@ export const styles = StyleSheet.create({
 
   primaryButtonOnGreen: {
     backgroundColor: '#020307',
-    borderRadius: 14,
     paddingVertical: 14,
+    borderRadius: 14,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#020307',
   },
+
   primaryButtonTextOnGreen: {
     color: '#ffffff',
   },
@@ -143,6 +142,7 @@ export const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
   },
+
   secondaryButtonText: {
     color: '#d6daff',
     fontSize: 16,
@@ -153,6 +153,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderColor: '#020307',
   },
+
   secondaryButtonTextOnGreen: {
     color: '#020307',
   },
@@ -161,43 +162,57 @@ export const styles = StyleSheet.create({
     opacity: 0.4,
   },
 
-  /* ---------- SLIDES / STORIES ---------- */
+  /* ---------- INTRO SLIDES (CREATE WALLET) ---------- */
 
   storyProgressRow: {
     flexDirection: 'row',
     gap: 4,
     marginBottom: 16,
   },
+
   storyBar: {
     flex: 1,
     height: 3,
     borderRadius: 999,
     backgroundColor: '#252836',
   },
+
   storyBarActive: {
     backgroundColor: '#24ffa1',
   },
 
+  slideTapArea: {
+    flex: 1,
+  },
+
+  slideCardContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+
   slideCard: {
     backgroundColor: '#050b11',
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 40,
     borderWidth: 1,
     borderColor: '#18ff7644',
   },
+
   slideIcon: {
     fontSize: 40,
     marginBottom: 12,
   },
+
   slideTitle: {
     color: '#ffffff',
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 8,
   },
+
   slideSubtitle: {
     color: '#a3aac5',
     fontSize: 14,
@@ -210,41 +225,106 @@ export const styles = StyleSheet.create({
     gap: 8,
     marginTop: 16,
   },
+
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: '#272a3c',
   },
+
   dotActive: {
     backgroundColor: '#24ffa1',
   },
 
-  /* ---------- SECTION HEADERS ---------- */
+  /* ---------- GENERIC SECTION HEADERS ---------- */
 
   sectionTitle: {
     color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 8,
+    fontSize: 24,
+    fontWeight: '800',
+    marginBottom: 6,
   },
+
   sectionSub: {
     color: '#9ea4b8',
     fontSize: 14,
     marginBottom: 24,
   },
 
-  /* ---------- MNEMONIC GRID ---------- */
+  /* ---------- MNEMONIC / SECRET PHRASE ---------- */
+
+  mnemonicHeader: {
+    marginTop: 16,     // bumped down from top a bit
+    marginBottom: 18,
+  },
+
+  mnemonicTitle: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: '800',
+    marginBottom: 6,
+  },
+
+  mnemonicSub: {
+    color: '#9ea4b8',
+    fontSize: 14,
+    marginBottom: 20,
+  },
+
+  mnemonicSubtitle: {
+    color: '#9ea4b8',
+    fontSize: 14,
+    marginBottom: 20,
+  },
+
+  mnemonicCardOuter: {
+    flex: 1,
+    backgroundColor: '#050b11',
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    borderWidth: 1,
+    borderColor: '#181f30',
+    marginBottom: 24,
+  },
+
+  mnemonicIntroCard: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+
+  mnemonicIntroTitle: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+
+  mnemonicIntroBody: {
+    color: '#9ea4b8',
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
 
   mnemonicScroll: {
     flex: 1,
     marginBottom: 16,
   },
+
+  mnemonicScrollContent: {
+    paddingBottom: 8,
+  },
+
   mnemonicGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
   },
+
   mnemonicWordBox: {
     width: '30%',
     flexDirection: 'row',
@@ -256,17 +336,171 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#141927',
   },
+
   mnemonicIndex: {
     color: '#7c82a0',
     fontSize: 12,
     marginRight: 4,
   },
+
   mnemonicWord: {
     color: '#ffffff',
     fontSize: 14,
   },
 
-  /* ---------- PASSCODE ---------- */
+  mnemonicFooter: {
+    gap: 12,
+    marginBottom: 8,
+  },
+
+  /* ---------- PASSCODE SCREEN ---------- */
+
+  passcodeRoot: {
+    flex: 1,
+    backgroundColor: '#020307',
+    paddingHorizontal: 24,
+    paddingTop: 72,
+    paddingBottom: 32,
+  },
+
+  passcodeHeader: {
+    marginBottom: 32,
+  },
+
+  passcodeHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+
+  passcodeBackHitArea: {
+    paddingRight: 8,
+    paddingVertical: 4,
+    marginRight: 4,
+  },
+
+  passcodeBackIcon: {
+    color: '#9ea4b8',
+    fontSize: 18,
+  },
+
+  passcodeTitle: {
+    color: '#ffffff',
+    fontSize: 26,
+    fontWeight: '800',
+  },
+
+  passcodeSubtitle: {
+    color: '#9ea4b8',
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 8,
+  },
+
+  passcodeBody: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+  passcodeDotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: 20,
+  },
+
+  passcodeDot: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 2,
+    borderColor: '#303446',
+  },
+
+  passcodeDotFilled: {
+    backgroundColor: '#19e470',
+    borderColor: '#19e470',
+  },
+
+  passcodeToggleRow: {
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+
+  passcodeToggleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: '#050b11',
+    borderWidth: 1,
+    borderColor: '#262a3c',
+  },
+
+  passcodeToggleIcon: {
+    fontSize: 14,
+    marginRight: 6,
+    color: '#d6daff',
+  },
+
+  passcodeToggleText: {
+    color: '#d6daff',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+
+  passcodePlainText: {
+    marginTop: 6,
+    textAlign: 'center',
+    color: '#9ea4b8',
+    letterSpacing: 4,
+    fontSize: 16,
+  },
+
+  keypadGrid: {
+    marginTop: 28,
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: 18,
+  },
+
+  keypadPressable: {
+    width: '30%',
+    alignItems: 'center',
+  },
+
+  keypadKey: {
+    width: '100%',
+    aspectRatio: 1.6,
+    borderRadius: 20,
+    backgroundColor: '#181c27',
+    borderWidth: 1,
+    borderColor: '#303446',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  keypadKeyText: {
+    color: '#ffffff',
+    fontSize: 22,
+    fontWeight: '600',
+  },
+
+  keypadSpacer: {
+    width: '30%',
+  },
+
+  keypadKeyIcon: {
+    color: '#ffffff',
+    fontSize: 18,
+  },
+
+  passcodeFooter: {
+    marginTop: 24,
+  },
 
   passcodeInput: {
     backgroundColor: '#050b11',
@@ -281,7 +515,73 @@ export const styles = StyleSheet.create({
     borderColor: '#181f30',
   },
 
-  /* ---------- TOGGLE BUTTONS ---------- */
+  passcodeShowButton: {
+    marginTop: 12,
+    alignSelf: 'center',
+  },
+
+  passcodeShowText: {
+    color: '#8f96b2',
+    fontSize: 13,
+  },
+
+  /* ---------- BIOMETRICS SCREEN ---------- */
+
+  biometricsHeader: {
+    marginTop: 16,
+    marginBottom: 32,
+  },
+
+  biometricsLockArea: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  lockCircle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#11121d',
+    borderWidth: 1,
+    borderColor: '#262a3c',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  lockShackle: {
+    width: 74,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 6,
+    borderColor: '#f2f4ff',
+    borderBottomWidth: 0,
+    marginBottom: -10,
+  },
+
+  lockBody: {
+    width: 96,
+    height: 80,
+    borderRadius: 18,
+    backgroundColor: '#f2f4ff',
+  },
+
+  biometricsButtons: {
+    marginTop: 24,
+    marginBottom: 12,
+    gap: 12,
+  },
+
+  /* ---------- NOTIFICATIONS SCREEN ---------- */
+
+
+  notificationsBody: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+
+  /* ---------- TOGGLE BUTTONS (BIOMETRICS / NOTIFS) ---------- */
 
   toggleButton: {
     flex: 1,
@@ -291,15 +591,18 @@ export const styles = StyleSheet.create({
     borderColor: '#3b3f55',
     alignItems: 'center',
   },
+
   toggleButtonSelected: {
     backgroundColor: '#19e47022',
     borderColor: '#19e470',
   },
+
   toggleButtonText: {
     color: '#c4c8e0',
     fontSize: 14,
     fontWeight: '600',
   },
+
   toggleButtonTextSelected: {
     color: '#ffffff',
   },
@@ -312,6 +615,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 18,
   },
+
   walletSelector: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -322,16 +626,19 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#202838',
   },
+
   walletSelectorLabel: {
     color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
   },
+
   chevron: {
     color: '#9ea4b8',
     fontSize: 12,
     marginLeft: 6,
   },
+
   moreButton: {
     width: 32,
     height: 32,
@@ -341,6 +648,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   moreDots: {
     color: '#d4d7ea',
     fontSize: 20,
@@ -357,16 +665,19 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#181f30',
   },
+
   balanceLabel: {
     color: '#a1a6c4',
     fontSize: 13,
     marginBottom: 6,
   },
+
   balanceValue: {
     color: '#ffffff',
     fontSize: 28,
     fontWeight: '800',
   },
+
   balanceSub: {
     color: '#7e83a0',
     fontSize: 13,
@@ -378,10 +689,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
   },
+
   dailyLabel: {
     color: '#a0a6c0',
     fontSize: 13,
   },
+
   dailyValue: {
     color: '#24ffa1',
     fontSize: 13,
@@ -395,6 +708,7 @@ export const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 12,
   },
+
   actionButton: {
     width: '22%',
     backgroundColor: '#050b11',
@@ -406,6 +720,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#181f30',
   },
+
   actionIconPlaceholder: {
     width: 32,
     height: 32,
@@ -415,10 +730,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 6,
   },
+
   actionIconText: {
     color: '#24ffa1',
     fontWeight: '700',
   },
+
   actionLabel: {
     color: '#d5d8f0',
     fontSize: 11,
@@ -431,5 +748,71 @@ export const styles = StyleSheet.create({
     marginTop: 16,
     color: '#6e748f',
     fontSize: 11,
+  },
+
+
+    // wrapper for centering header + choice
+  notificationsCenter: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+  notificationsHeader: {
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+
+  notificationsTitle: {
+    color: '#ffffff',
+    fontSize: 28,
+    fontWeight: '800',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+
+  notificationsSub: {
+    color: '#9ea4b8',
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: 'center',
+  },
+
+  notificationsChoiceRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+  },
+
+  notificationsChoiceButton: {
+    flex: 1,
+    maxWidth: 160,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#303446',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#050b11',
+  },
+
+  notificationsChoiceButtonActive: {
+    backgroundColor: '#19e47022',
+    borderColor: '#19e470',
+  },
+
+  notificationsChoiceText: {
+    color: '#d6daff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
+  notificationsChoiceTextActive: {
+    color: '#ffffff',
+  },
+
+  notificationsFooter: {
+    marginTop: 24,
   },
 });
