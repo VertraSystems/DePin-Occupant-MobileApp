@@ -1,3 +1,4 @@
+// App.tsx
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,49 +7,24 @@ import { styles } from './style';
 import WelcomeScreen from './components/screens/WelcomeScreen';
 import CreateSlidesScreen from './components/screens/CreateSlidesScreen';
 import MnemonicScreen from './components/screens/MnemonicScreen';
+import MnemonicConfirmScreen from './components/screens/MnemonicConfirmScreen';
 import PasscodeScreen from './components/screens/PasscodeScreen';
 import BiometricsScreen from './components/screens/BiometricsScreen';
 import NotificationsScreen from './components/screens/NotificationsScreen';
 import MainWalletScreen from './components/screens/MainWalletScreen';
 
 import type { Wallet } from './type';
+import { generateNewMnemonic } from './lib/mnemonic';
 
 type Screen =
   | 'welcome'
   | 'createSlides'
   | 'showMnemonic'
+  | 'confirmMnemonic'
   | 'passcode'
   | 'biometrics'
   | 'notifications'
   | 'main';
-
-// TEMP mnemonic
-const DEMO_MNEMONIC: string[] = [
-  'gravity',
-  'museum',
-  'canvas',
-  'elevator',
-  'signal',
-  'safety',
-  'token',
-  'feather',
-  'window',
-  'vertra',
-  'occupant',
-  'network',
-  'ocean',
-  'bridge',
-  'hammer',
-  'ledger',
-  'vault',
-  'silver',
-  'random',
-  'planet',
-  'future',
-  'metro',
-  'cable',
-  'vector',
-];
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('welcome');
@@ -56,10 +32,12 @@ export default function App() {
 
   const [slideIndex, setSlideIndex] = useState(0);
   const [passcode, setPasscode] = useState('');
-  const [biometricsChoice, setBiometricsChoice] = useState<'yes' | 'no' | null>(null);
-  const [notificationsChoice, setNotificationsChoice] = useState<'yes' | 'no' | null>(null);
+  const [biometricsChoice, setBiometricsChoice] =
+    useState<'yes' | 'no' | null>(null);
+  const [notificationsChoice, setNotificationsChoice] =
+    useState<'yes' | 'no' | null>(null);
 
-  // tracks if user actually confirmed / saw their phrase
+  // did they pass the recovery-phrase quiz?
   const [mnemonicConfirmed, setMnemonicConfirmed] = useState(false);
 
   // auto-advance intro slides
@@ -81,26 +59,31 @@ export default function App() {
   }, [screen]);
 
   const handleStartCreateWallet = () => {
-    setWallet({ mnemonic: DEMO_MNEMONIC });
+    const phrase = generateNewMnemonic(24); // real BIP-39 24-word phrase
+    setWallet({ mnemonic: phrase });
     setScreen('createSlides');
   };
 
   const handleSlidesContinue = () => setScreen('showMnemonic');
 
-  // user pressed "I wrote it down"
-  const handleMnemonicConfirmed = () => {
-    setMnemonicConfirmed(true);
-    setScreen('passcode');
+  // First mnemonic screen -> Continue
+  const handleMnemonicScreenContinue = () => {
+    setScreen('confirmMnemonic');
   };
 
-  // user pressed "Skip for now"
+  // Any "Skip for now" in mnemonic flow
   const handleMnemonicSkipped = () => {
     setMnemonicConfirmed(false);
     setScreen('passcode');
   };
 
+  // Quiz success
+  const handleMnemonicQuizSuccess = () => {
+    setMnemonicConfirmed(true);
+    setScreen('passcode');
+  };
+
   const handlePasscodeContinue = () => {
-    // only save passcode if one was entered
     if (passcode.length > 0) {
       setWallet(prev => (prev ? { ...prev, passcode } : prev));
     }
@@ -108,7 +91,7 @@ export default function App() {
   };
 
   const handlePasscodeSkipped = () => {
-    // allowed only when mnemonicConfirmed === true
+    // only allowed when mnemonicConfirmed === true (wired via canSkipPasscode)
     setScreen('biometrics');
   };
 
@@ -154,8 +137,18 @@ export default function App() {
     case 'showMnemonic':
       content = (
         <MnemonicScreen
-          mnemonic={wallet?.mnemonic ?? DEMO_MNEMONIC}
-          onConfirm={handleMnemonicConfirmed}
+          mnemonic={wallet?.mnemonic ?? []}
+          onConfirm={handleMnemonicScreenContinue}
+          onSkip={handleMnemonicSkipped}
+        />
+      );
+      break;
+
+    case 'confirmMnemonic':
+      content = (
+        <MnemonicConfirmScreen
+          mnemonic={wallet?.mnemonic ?? []}
+          onSuccess={handleMnemonicQuizSuccess}
           onSkip={handleMnemonicSkipped}
         />
       );
