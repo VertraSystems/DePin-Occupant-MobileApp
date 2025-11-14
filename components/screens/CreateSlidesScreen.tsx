@@ -31,7 +31,7 @@ const SLIDES = [
   {
     icon: '🖊️',
     title: 'Write It Down',
-    body: 'Grab a pen and paper. You’ll get a secret phrase that can recover your wallet.',
+    body: 'Write your secret phrase down and keep it somewhere safe offline. It’s the only way to recover your wallet.',
   },
 ];
 
@@ -99,7 +99,7 @@ const CreateSlidesScreen: React.FC<Props> = ({
       </Pressable>
 
       <PrimaryButton
-        label={clampedIndex < SLIDES.length - 1 ? 'Continue' : 'I wrote it down'}
+        label={clampedIndex < SLIDES.length - 1 ? 'Continue' : 'View'}
         onPress={handlePrimaryPress}
       />
     </View>

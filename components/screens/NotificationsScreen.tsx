@@ -1,12 +1,15 @@
 // components/screens/NotificationsScreen.tsx
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text } from 'react-native';
 import { styles } from '../../style';
-import { PrimaryButton } from '../Buttons';
+import { PrimaryButton, ToggleButton } from '../Buttons';
+
+// Keep this aligned with App.tsx: 'yes' | 'no' | null
+export type NotificationsChoice = 'yes' | 'no' | null;
 
 type Props = {
-  choice: 'yes' | 'no' | null;
-  onChoose: (value: 'yes' | 'no') => void;
+  choice: NotificationsChoice;
+  onChoose: (choice: Exclude<NotificationsChoice, null>) => void;
   onContinue: () => void;
 };
 
@@ -15,57 +18,43 @@ const NotificationsScreen: React.FC<Props> = ({
   onChoose,
   onContinue,
 }) => {
+  const canContinue = choice !== null;
+
   return (
     <View style={styles.screenRoot}>
-      {/* Centered title + subtitle + choice buttons */}
-      <View style={styles.notificationsCenter}>
-        <View style={styles.notificationsHeader}>
+      {/* Centered title + copy + placeholder for future animation */}
+      <View style={styles.notificationsContent}>
+        <View style={styles.notificationsTextBlock}>
           <Text style={styles.notificationsTitle}>Enable notifications?</Text>
-          <Text style={styles.notificationsSub}>
+          <Text style={styles.notificationsSubtitle}>
             Get alerts when your rewards change or your data sessions complete.
           </Text>
         </View>
 
-        <View style={styles.notificationsChoiceRow}>
-          <Pressable
-            onPress={() => onChoose('yes')}
-            style={[
-              styles.notificationsChoiceButton,
-              choice === 'yes' && styles.notificationsChoiceButtonActive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.notificationsChoiceText,
-                choice === 'yes' && styles.notificationsChoiceTextActive,
-              ]}
-            >
-              Enable
-            </Text>
-          </Pressable>
-
-          <Pressable
-            onPress={() => onChoose('no')}
-            style={[
-              styles.notificationsChoiceButton,
-              choice === 'no' && styles.notificationsChoiceButtonActive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.notificationsChoiceText,
-                choice === 'no' && styles.notificationsChoiceTextActive,
-              ]}
-            >
-              Maybe later
-            </Text>
-          </Pressable>
-        </View>
+        {/* Circle reserved for future video / animation */}
+        <View style={styles.notificationsVideoPlaceholder} />
       </View>
 
-      {/* Bottom CTA */}
+      {/* Choice buttons + create wallet/continue */}
       <View style={styles.notificationsFooter}>
-        <PrimaryButton label="Create wallet" onPress={onContinue} />
+        <View style={styles.notificationsToggleRow}>
+          <ToggleButton
+            label="Enable"
+            selected={choice === 'yes'}
+            onPress={() => onChoose('yes')}
+          />
+          <ToggleButton
+            label="Maybe later"
+            selected={choice === 'no'}
+            onPress={() => onChoose('no')}
+          />
+        </View>
+
+        <PrimaryButton
+          label="Create wallet"
+          onPress={onContinue}
+          disabled={!canContinue}
+        />
       </View>
     </View>
   );

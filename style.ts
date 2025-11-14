@@ -741,13 +741,6 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
 
-  notificationsTitle: {
-    color: '#ffffff',
-    fontSize: 28,
-    fontWeight: '800',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
 
   notificationsSub: {
     color: '#9ea4b8',
@@ -790,7 +783,205 @@ export const styles = StyleSheet.create({
     color: '#ffffff',
   },
 
-  notificationsFooter: {
-    marginTop: 24,
+ 
+
+    /* ---------- NOTIFICATIONS SCREEN ---------- */
+
+  notificationsContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+
+  notificationsTextBlock: {
+    alignItems: 'center',
+    marginBottom: 28,
+    paddingHorizontal: 16,
+  },
+
+  notificationsTitle: {
+    color: '#ffffff',
+    fontSize: 26,
+    fontWeight: '800',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+
+  notificationsSubtitle: {
+    color: '#9ea4b8',
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+  },
+
+  // circular placeholder for future video/animation
+  notificationsVideoPlaceholder: {
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: '#050b11',
+    borderWidth: 1,
+    borderColor: '#262a3c',
+  },
+
+  notificationsFooter: {
+    gap: 12,
+    marginTop: 16,
+  },
+
+  notificationsToggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  // --- Main wallet: account dropdown under "Main Wallet" pill ---
+  walletDropdown: {
+    marginBottom: 16,
+    marginTop: -4,
+    backgroundColor: '#050b11',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#202838',
+    paddingVertical: 6,
+  },
+  walletDropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  walletDropdownItemActive: {
+    backgroundColor: '#19e47014',
+  },
+  walletDropdownLabel: {
+    color: '#d6daff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  walletDropdownLabelActive: {
+    color: '#ffffff',
+  },
+  walletDropdownBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 999,
+    backgroundColor: '#19e47022',
+    color: '#19e470',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  walletDropdownAddRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#202838',
+    marginTop: 4,
+  },
+  walletDropdownAddPlus: {
+    color: '#19e470',
+    fontSize: 18,
+    marginRight: 6,
+  },
+  walletDropdownAddText: {
+    color: '#d6daff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
+  // --- Main wallet: 3-dot settings dropdown (Phantom-style) ---
+  settingsDropdown: {
+    marginBottom: 18,
+    backgroundColor: '#050b11',
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#202838',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  settingsSectionTitle: {
+    color: '#7f86aa',
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginTop: 6,
+    marginBottom: 4,
+  },
+  settingsItemRow: {
+    paddingVertical: 10,
+  },
+  settingsItemLabel: {
+    color: '#e4e7ff',
+    fontSize: 14,
+  },
+  // Scroll container for main wallet (no justifyContent here)
+
+  // ---------- MAIN WALLET ROOT + SCROLL ----------
+
+  walletRoot: {
+    flex: 1,
+    backgroundColor: '#020307',
+  },
+
+  walletScroll: {
+    flex: 1,
+    backgroundColor: '#020307',
+  },
+
+  walletScrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 52,
+    paddingBottom: 100, // leave space for bottom nav
+  },
+
+  // ---------- BOTTOM NAV BAR ----------
+
+  bottomNavBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 18,
+    paddingTop: 8,
+    paddingBottom: 14,
+    borderTopWidth: 1,
+    borderTopColor: '#181f30',
+    backgroundColor: '#020307',
+  },
+
+  bottomNavItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+  },
+
+  bottomNavItemActive: {
+    // slight scale / emphasis if you want later
+  },
+
+  bottomNavIndicator: {
+    width: 22,
+    height: 3,
+    borderRadius: 999,
+    backgroundColor: '#19e470',
+    marginBottom: 4,
+  },
+
+  bottomNavIcon: {
+    fontSize: 18,
+    color: '#8f96b2',
+  },
+
+  bottomNavLabel: {
+    fontSize: 11,
+    color: '#8f96b2',
+  },
+
+  bottomNavLabelActive: {
+    color: '#19e470',
+  },
+
 });
