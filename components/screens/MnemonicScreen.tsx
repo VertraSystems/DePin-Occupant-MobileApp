@@ -6,53 +6,43 @@ import { PrimaryButton, SecondaryButton } from '../Buttons';
 
 type Props = {
   mnemonic: string[];
-  // called when user has revealed AND confirmed they wrote it down
-  onConfirmWritten: () => void;
-  // called when user taps "Skip for now"
-  onSkip: () => void;
+  onConfirm: () => void; // user tapped "I wrote it down"
+  onSkip: () => void;    // user tapped "Skip for now"
 };
 
-const MnemonicScreen: React.FC<Props> = ({
-  mnemonic,
-  onConfirmWritten,
-  onSkip,
-}) => {
+const MnemonicScreen: React.FC<Props> = ({ mnemonic, onConfirm, onSkip }) => {
   const [revealed, setRevealed] = useState(false);
 
   const handlePrimaryPress = () => {
     if (!revealed) {
-      // first press: reveal the words
       setRevealed(true);
     } else {
-      // second press (after revealed): user says they wrote it down
-      onConfirmWritten();
+      onConfirm();
     }
   };
 
   return (
     <View style={styles.screenRoot}>
-      {/* Header (pulled down a bit in styles) */}
+      {/* Header */}
       <View style={styles.mnemonicHeader}>
         <Text style={styles.mnemonicTitle}>Your secret phrase</Text>
         <Text style={styles.mnemonicSubtitle}>
-          Write these {mnemonic.length} words down in order. Keep them offline
-          and never share them.
+          Write these {mnemonic.length} words down in order. Keep them offline and
+          never share them.
         </Text>
       </View>
 
       {/* Card area */}
       <View style={styles.mnemonicCardOuter}>
         {!revealed ? (
-          // Intro "Write it down" state
           <View style={styles.mnemonicIntroCard}>
             <Text style={styles.mnemonicIntroTitle}>Write it down</Text>
             <Text style={styles.mnemonicIntroBody}>
-              Make sure no one is watching—this phrase gives full access to your
-              wallet. Never share it with anyone.
+              Make sure no one is watching—this phrase gives full access to your wallet.
+              Never share it with anyone.
             </Text>
           </View>
         ) : (
-          // Revealed phrase in a scrollable grid
           <ScrollView
             style={styles.mnemonicScroll}
             contentContainerStyle={styles.mnemonicScrollContent}

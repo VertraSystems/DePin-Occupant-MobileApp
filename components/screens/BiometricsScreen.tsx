@@ -1,63 +1,54 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, Easing } from 'react-native';
-import { styles } from './../../style';
+// components/screens/BiometricsScreen.tsx
+import React from 'react';
+import { View, Text } from 'react-native';
+import { Video, ResizeMode } from 'expo-av';
+import { styles } from '../../style';
 import { PrimaryButton, ToggleButton } from '../Buttons';
 
+// what the user can pick on this screen
+export type BiometricsChoice = 'yes' | 'no' | null;
+
 type Props = {
-  choice: 'yes' | 'no' | null;
-  onChoose: (c: 'yes' | 'no') => void;
+  choice: BiometricsChoice;
+  onChoose: (choice: Exclude<BiometricsChoice, null>) => void;
   onContinue: () => void;
 };
 
-const BiometricsScreen: React.FC<Props> = ({ choice, onChoose, onContinue }) => {
-  const shackleOffset = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(shackleOffset, {
-          toValue: -6,
-          duration: 550,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(shackleOffset, {
-          toValue: 0,
-          duration: 550,
-          easing: Easing.in(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
-  }, [shackleOffset]);
+const LOCK_VIDEO = require('../../assets/lock_video.mp4');
+const BiometricsScreen: React.FC<Props> = ({
+  choice,
+  onChoose,
+  onContinue,
+}) => {
+  const canContinue = choice !== null;
 
   return (
     <View style={styles.screenRoot}>
-      {/* Header, moved slightly down from the very top */}
-      <View style={styles.biometricsHeader}>
-        <Text style={styles.sectionTitle}>Unlock quicker</Text>
-        <Text style={styles.sectionSub}>
-          Use Face ID or fingerprint so you don&apos;t have to type your
-          passcode every time you open Vertra.
-        </Text>
-      </View>
+      {/* Centered title + copy + lock animation */}
+      <View style={styles.biometricsContent}>
+        <View style={styles.biometricsTextBlock}>
+          <Text style={styles.biometricsTitle}>Unlock quicker</Text>
+          <Text style={styles.biometricsSubtitle}>
+            Use Face ID or fingerprint so you don&apos;t have to type your
+            passcode every time you open Vertra.
+          </Text>
+        </View>
 
-      {/* Lock animation, centered in the free vertical space */}
-      <View style={styles.biometricsLockArea}>
-        <View style={styles.lockCircle}>
-          <Animated.View
-            style={[
-              styles.lockShackle,
-              { transform: [{ translateY: shackleOffset }] },
-            ]}
+        <View style={styles.biometricsVideoWrapper}>
+          <Video
+            source={LOCK_VIDEO}
+            style={styles.biometricsVideo}
+            resizeMode={ResizeMode.CONTAIN}
+            isLooping={false}   // play once
+            shouldPlay          // start immediately
+            isMuted             // no sound
           />
-          <View style={styles.lockBody} />
         </View>
       </View>
 
-      {/* Choice + primary action, nudged up from bottom */}
-      <View style={styles.biometricsButtons}>
-        <View style={styles.buttonRow}>
+      {/* Choice buttons + continue */}
+      <View style={styles.biometricsFooter}>
+        <View style={styles.biometricsToggleRow}>
           <ToggleButton
             label="Yes, enable"
             selected={choice === 'yes'}
@@ -73,7 +64,7 @@ const BiometricsScreen: React.FC<Props> = ({ choice, onChoose, onContinue }) => 
         <PrimaryButton
           label="Continue"
           onPress={onContinue}
-          disabled={!choice}
+          disabled={!canContinue}
         />
       </View>
     </View>

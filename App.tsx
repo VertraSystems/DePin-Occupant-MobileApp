@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { styles } from './style';
+
 import WelcomeScreen from './components/screens/WelcomeScreen';
 import CreateSlidesScreen from './components/screens/CreateSlidesScreen';
 import MnemonicScreen from './components/screens/MnemonicScreen';
@@ -10,6 +10,7 @@ import PasscodeScreen from './components/screens/PasscodeScreen';
 import BiometricsScreen from './components/screens/BiometricsScreen';
 import NotificationsScreen from './components/screens/NotificationsScreen';
 import MainWalletScreen from './components/screens/MainWalletScreen';
+
 import type { Wallet } from './type';
 
 type Screen =
@@ -21,7 +22,7 @@ type Screen =
   | 'notifications'
   | 'main';
 
-// TEMP DEMO MNEMONIC
+// TEMP mnemonic
 const DEMO_MNEMONIC: string[] = [
   'gravity',
   'museum',
@@ -52,17 +53,16 @@ const DEMO_MNEMONIC: string[] = [
 export default function App() {
   const [screen, setScreen] = useState<Screen>('welcome');
   const [wallet, setWallet] = useState<Wallet | null>(null);
+
   const [slideIndex, setSlideIndex] = useState(0);
   const [passcode, setPasscode] = useState('');
-  const [biometricsChoice, setBiometricsChoice] =
-    useState<'yes' | 'no' | null>(null);
-  const [notificationsChoice, setNotificationsChoice] =
-    useState<'yes' | 'no' | null>(null);
+  const [biometricsChoice, setBiometricsChoice] = useState<'yes' | 'no' | null>(null);
+  const [notificationsChoice, setNotificationsChoice] = useState<'yes' | 'no' | null>(null);
 
-  // NEW: did the user skip viewing the mnemonic?
-  const [skippedMnemonic, setSkippedMnemonic] = useState<boolean | null>(null);
+  // tracks if user actually confirmed / saw their phrase
+  const [mnemonicConfirmed, setMnemonicConfirmed] = useState(false);
 
-  // Auto-advance slides every 5 seconds
+  // auto-advance intro slides
   useEffect(() => {
     if (screen !== 'createSlides') return;
 
@@ -87,20 +87,28 @@ export default function App() {
 
   const handleSlidesContinue = () => setScreen('showMnemonic');
 
-  // Called when they saw + confirmed the phrase
+  // user pressed "I wrote it down"
   const handleMnemonicConfirmed = () => {
-    setSkippedMnemonic(false);
+    setMnemonicConfirmed(true);
     setScreen('passcode');
   };
 
-  // Called when they hit "Skip for now"
+  // user pressed "Skip for now"
   const handleMnemonicSkipped = () => {
-    setSkippedMnemonic(true);
+    setMnemonicConfirmed(false);
     setScreen('passcode');
   };
 
   const handlePasscodeContinue = () => {
-    setWallet(prev => (prev ? { ...prev, passcode } : prev));
+    // only save passcode if one was entered
+    if (passcode.length > 0) {
+      setWallet(prev => (prev ? { ...prev, passcode } : prev));
+    }
+    setScreen('biometrics');
+  };
+
+  const handlePasscodeSkipped = () => {
+    // allowed only when mnemonicConfirmed === true
     setScreen('biometrics');
   };
 
@@ -147,7 +155,7 @@ export default function App() {
       content = (
         <MnemonicScreen
           mnemonic={wallet?.mnemonic ?? DEMO_MNEMONIC}
-          onConfirmWritten={handleMnemonicConfirmed}
+          onConfirm={handleMnemonicConfirmed}
           onSkip={handleMnemonicSkipped}
         />
       );
@@ -159,9 +167,8 @@ export default function App() {
           passcode={passcode}
           onChangePasscode={setPasscode}
           onContinue={handlePasscodeContinue}
-          // Only allow going back if they skipped
-          canGoBackToMnemonic={skippedMnemonic === true}
-          onGoBackToMnemonic={() => setScreen('showMnemonic')}
+          canSkipPasscode={mnemonicConfirmed}
+          onSkipPasscode={mnemonicConfirmed ? handlePasscodeSkipped : undefined}
         />
       );
       break;

@@ -1,20 +1,15 @@
 // components/screens/PasscodeScreen.tsx
 import React, { useState, useRef } from 'react';
-import {
-  View,
-  Text,
-  Pressable,
-  Animated,
-} from 'react-native';
+import { View, Text, Pressable, Animated } from 'react-native';
 import { styles } from '../../style';
-import { PrimaryButton } from '../Buttons';
+import { PrimaryButton, SecondaryButton } from '../Buttons';
 
 type Props = {
   passcode: string;
   onChangePasscode: (value: string) => void;
   onContinue: () => void;
-  canGoBackToMnemonic?: boolean;
-  onGoBackToMnemonic?: () => void;
+  canSkipPasscode?: boolean;
+  onSkipPasscode?: () => void;
 };
 
 const MIN_LENGTH = 4;
@@ -48,7 +43,7 @@ const AnimatedKey: React.FC<{
       }),
       Animated.timing(highlight, {
         toValue: 1,
-        duration: 80,
+        duration: 70,
         useNativeDriver: false,
       }),
     ]).start();
@@ -64,18 +59,17 @@ const AnimatedKey: React.FC<{
       }),
       Animated.timing(highlight, {
         toValue: 0,
-        duration: 160,
+        duration: 130,
         useNativeDriver: false,
       }),
-    ]).start(() => {
-      onPress();
-    });
+    ]).start();
   };
 
   return (
     <Pressable
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+      onPress={onPress}           // fire instantly
+      onPressIn={handlePressIn}   // just for animation
+      onPressOut={handlePressOut} // just for animation
       style={styles.keypadPressable}
     >
       <Animated.View
@@ -98,8 +92,8 @@ const PasscodeScreen: React.FC<Props> = ({
   passcode,
   onChangePasscode,
   onContinue,
-  canGoBackToMnemonic,
-  onGoBackToMnemonic,
+  canSkipPasscode,
+  onSkipPasscode,
 }) => {
   const [showPasscode, setShowPasscode] = useState(false);
 
@@ -116,21 +110,10 @@ const PasscodeScreen: React.FC<Props> = ({
   const canContinue = passcode.length >= MIN_LENGTH;
 
   return (
-    <View style={styles.screenRoot}>
-      {/* Header */}
+    <View style={styles.passcodeRoot}>
+      {/* Header (pulled down from the very top) */}
       <View style={styles.passcodeHeader}>
-        <View style={styles.passcodeHeaderRow}>
-          {canGoBackToMnemonic && onGoBackToMnemonic && (
-            <Pressable
-              onPress={onGoBackToMnemonic}
-              style={styles.passcodeBackHitArea}
-            >
-              <Text style={styles.passcodeBackIcon}>←</Text>
-            </Pressable>
-          )}
-          <Text style={styles.passcodeTitle}>Set a passcode</Text>
-        </View>
-
+        <Text style={styles.passcodeTitle}>Set a passcode</Text>
         <Text style={styles.passcodeSubtitle}>
           Add a {MIN_LENGTH}–{MAX_LENGTH} digit passcode to open your wallet on
           this device.
@@ -179,11 +162,7 @@ const PasscodeScreen: React.FC<Props> = ({
         {/* Keypad */}
         <View style={styles.keypadGrid}>
           {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(d => (
-            <AnimatedKey
-              key={d}
-              label={d}
-              onPress={() => handleDigitPress(d)}
-            />
+            <AnimatedKey key={d} label={d} onPress={() => handleDigitPress(d)} />
           ))}
 
           {/* spacer */}
@@ -193,10 +172,7 @@ const PasscodeScreen: React.FC<Props> = ({
           <AnimatedKey label="0" onPress={() => handleDigitPress('0')} />
 
           {/* backspace */}
-          <Pressable
-            onPress={handleBackspace}
-            style={styles.keypadPressable}
-          >
+          <Pressable onPress={handleBackspace} style={styles.keypadPressable}>
             <Animated.View style={styles.keypadKey}>
               <Text style={styles.keypadKeyIcon}>⌫</Text>
             </Animated.View>
@@ -204,13 +180,22 @@ const PasscodeScreen: React.FC<Props> = ({
         </View>
       </View>
 
-      {/* Footer button */}
+      {/* Footer buttons */}
       <View style={styles.passcodeFooter}>
         <PrimaryButton
           label="Continue"
           onPress={onContinue}
-          disabled={!canContinue}
+          disabled={!canContinue && !canSkipPasscode}
         />
+
+        {canSkipPasscode && onSkipPasscode && (
+          <View style={{ marginTop: 12 }}>
+            <SecondaryButton
+              label="Skip for now"
+              onPress={onSkipPasscode}
+            />
+          </View>
+        )}
       </View>
     </View>
   );

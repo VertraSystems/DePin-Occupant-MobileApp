@@ -1,3 +1,4 @@
+// components/screens/CreateSlidesScreen.tsx
 import React from 'react';
 import {
   View,
@@ -34,6 +35,8 @@ const SLIDES = [
   },
 ];
 
+const screenWidth = Dimensions.get('window').width;
+
 const CreateSlidesScreen: React.FC<Props> = ({
   slideIndex,
   onNextSlide,
@@ -45,7 +48,6 @@ const CreateSlidesScreen: React.FC<Props> = ({
 
   const handleTap = (evt: GestureResponderEvent) => {
     const { locationX } = evt.nativeEvent;
-    const screenWidth = Dimensions.get('window').width;
 
     if (locationX < screenWidth / 2) {
       // Left side → previous slide
@@ -72,7 +74,7 @@ const CreateSlidesScreen: React.FC<Props> = ({
 
   return (
     <View style={styles.screenRoot}>
-      {/* Story-style progress bars */}
+      {/* Story-style progress bars at the very top */}
       <View style={styles.storyProgressRow}>
         {SLIDES.map((_, idx) => (
           <View
@@ -85,7 +87,7 @@ const CreateSlidesScreen: React.FC<Props> = ({
         ))}
       </View>
 
-      {/* Tap area – left = back, right = next */}
+      {/* Full-screen tap area – card sits in the middle, fills ~3/4 of height */}
       <Pressable style={styles.slideTapArea} onPress={handleTap}>
         <View style={styles.slideCardContainer}>
           <View style={styles.slideCard}>
