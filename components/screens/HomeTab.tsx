@@ -7,6 +7,11 @@ import type { Wallet } from '../../type';
 
 type Props = {
   wallet: Wallet | null;
+  onOpenSend: () => void;
+  onOpenReceive: () => void;
+  onOpenExchange: () => void;
+  onOpenStake: () => void;
+  onLogout: () => void;
 };
 
 const ACTIONS = [
@@ -16,31 +21,23 @@ const ACTIONS = [
   { key: 'stake',   label: 'Stake',   sub: 'Stake tokens and track rewards.' },
 ];
 
-const ACTIVITY_ROWS = [
-  {
-    key: 'a1',
-    icon: 'R',
-    title: 'Received 0.25 PUTE',
-    sub: 'From GkzL…3a · 2 min ago',
-  },
-  {
-    key: 'a2',
-    icon: 'S',
-    title: 'Staked 10 PUTE',
-    sub: 'Validator VertraNode01 · 1 hr ago',
-  },
-  {
-    key: 'a3',
-    icon: 'S',
-    title: 'Sent 0.10 PUTE',
-    sub: 'To 9xZ…ab · Yesterday',
-  },
-];
+const HomeTab: React.FC<Props> = ({
+  wallet,
+  onOpenSend,
+  onOpenReceive,
+  onOpenExchange,
+  onOpenStake,
+  onLogout,
+}) => {
+  const address = wallet?.solanaAddress;
 
-const HomeTab: React.FC<Props> = ({ wallet }) => {
-  // static for now; adjust later once we know Wallet shape
-  const displayName = 'Main Wallet';
-  const initials = displayName.slice(0, 1).toUpperCase();
+  const displayName = address
+    ? `${address.slice(0, 4)}…${address.slice(-4)}`
+    : 'Devnet wallet';
+
+  const initials = address
+    ? address.slice(0, 2).toUpperCase()
+    : 'MW';
 
   return (
     <ScrollView
@@ -60,10 +57,16 @@ const HomeTab: React.FC<Props> = ({ wallet }) => {
           </View>
 
           <View style={styles.profileTextBlock}>
+            {/* 👇 title: shortened address */}
             <Text style={styles.profileName}>{displayName}</Text>
-            <Text style={styles.profileHandle}>@VertraDemo</Text>
+
+            {/* 👇 subtitle: full address or placeholder */}
+            <Text style={styles.profileHandle}>
+              {address ?? 'No address yet'}
+            </Text>
+
             <Text style={styles.profileTagline}>
-              Demo wallet — real balances and live tokens coming soon.
+              {(wallet?.network ?? 'devnet')} · Demo UI — not for real funds yet.
             </Text>
           </View>
         </View>
@@ -72,40 +75,55 @@ const HomeTab: React.FC<Props> = ({ wallet }) => {
       {/* Actions */}
       <Text style={styles.mainSectionTitle}>Actions</Text>
       <View style={styles.cardList}>
-        {ACTIONS.map(action => (
-          <Pressable key={action.key} style={styles.listRow}>
-            <View style={styles.listRowIconCircle}>
-              <Text style={styles.listRowIconText}>{action.label[0]}</Text>
-            </View>
-            <View style={styles.listRowText}>
-              <Text style={styles.listRowTitle}>{action.label}</Text>
-              <Text style={styles.listRowSub}>{action.sub}</Text>
-            </View>
-            <Feather name="chevron-right" size={18} style={styles.listRowChevron} />
-          </Pressable>
-        ))}
+        {ACTIONS.map(action => {
+          const onPress =
+            action.key === 'send'
+              ? onOpenSend
+              : action.key === 'receive'
+              ? onOpenReceive
+              : action.key === 'exchange'
+              ? onOpenExchange
+              : onOpenStake;
+
+          return (
+            <Pressable
+              key={action.key}
+              style={styles.listRow}
+              onPress={onPress}
+            >
+              <View style={styles.listRowIconCircle}>
+                <Text style={styles.listRowIconText}>{action.label[0]}</Text>
+              </View>
+              <View style={styles.listRowText}>
+                <Text style={styles.listRowTitle}>{action.label}</Text>
+                <Text style={styles.listRowSub}>{action.sub}</Text>
+              </View>
+              <Feather name="chevron-right" size={18} style={styles.listRowChevron} />
+            </Pressable>
+          );
+        })}
       </View>
 
-      {/* Recent activity preview */}
-      <Text style={styles.mainSectionTitle}>Recent activity</Text>
-      <View style={styles.cardList}>
-        {ACTIVITY_ROWS.map(row => (
-          <View key={row.key} style={styles.listRow}>
-            <View style={styles.listRowIconCircle}>
-              <Text style={styles.listRowIconText}>{row.icon}</Text>
-            </View>
-            <View style={styles.listRowText}>
-              <Text style={styles.listRowTitle}>{row.title}</Text>
-              <Text style={styles.listRowSub}>{row.sub}</Text>
-            </View>
-            <Feather name="chevron-right" size={18} style={styles.listRowChevron} />
-          </View>
-        ))}
-      </View>
-
-      <Text style={styles.debugNote}>
-        (Demo wallet only — not for real funds. Real key generation and balances coming next.)
-      </Text>
+      {/* Simple logout at bottom of home tab */}
+      <Pressable
+        style={[
+          styles.listRow,
+          { marginTop: 16, backgroundColor: '#120b11', borderColor: '#3b1a22' },
+        ]}
+        onPress={onLogout}
+      >
+        <View style={styles.listRowIconCircle}>
+          <Feather name="log-out" size={16} style={{ color: '#fb7185' }} />
+        </View>
+        <View style={styles.listRowText}>
+          <Text style={[styles.listRowTitle, { color: '#fb7185' }]}>
+            Log out
+          </Text>
+          <Text style={styles.listRowSub}>
+            You’ll need to re-enter your phrase or passcode to get back in.
+          </Text>
+        </View>
+      </Pressable>
     </ScrollView>
   );
 };

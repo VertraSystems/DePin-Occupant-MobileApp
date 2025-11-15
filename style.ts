@@ -231,6 +231,12 @@ export const styles = StyleSheet.create({
   mainWalletRoot: { flex: 1, backgroundColor: '#020712' },
   mainWalletScroll: { flex: 1 },
   pageScrollContent: { paddingTop: 32, paddingHorizontal: 16, paddingBottom: 32 },
+  // Extra padding for Send / Receive / Stake / Exchange
+  actionPageScrollContent: {
+    paddingTop: 80,          // moves content below the Dynamic Island / notch
+    paddingHorizontal: 16,
+    paddingBottom: 32,
+  },
 
   /* ---------- NEW PROFILE CARD (THE ONE YOU WANT) ---------- */
   profileCard: { backgroundColor: '#050c1a', borderRadius: 24, overflow: 'hidden', marginBottom: 24 },
@@ -298,6 +304,85 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 24,
   },
+
+    // --- login screen ---
+  loginRoot: {
+    flex: 1,
+    backgroundColor: '#020307',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  loginContent: {
+    backgroundColor: '#050b11',
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingVertical: 24,
+    borderWidth: 1,
+    borderColor: '#181f30',
+  },
+  loginTitle: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: '800',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  loginSubtitle: {
+    color: '#9ea4b8',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  loginInput: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#181f30',
+    backgroundColor: '#050b11',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    color: '#ffffff',
+    fontSize: 20,
+    letterSpacing: 4,
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  loginError: {
+    color: '#ff6b6b',
+    fontSize: 13,
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  loginButtons: {
+    gap: 10,
+    marginTop: 4,
+  },
+
+  // --- logout button on Home tab ---
+  logoutRow: {
+    marginTop: 24,
+    marginBottom: 32,
+    alignItems: 'center',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#303446',
+    backgroundColor: '#050b11',
+  },
+  logoutIcon: {
+    color: '#f97373',
+    marginRight: 8,
+  },
+  logoutText: {
+    color: '#f97373',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
 
   // --- screen titles / subtitles (Activity, Compute, Data) ---
   screenTitle: {

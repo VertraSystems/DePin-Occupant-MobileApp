@@ -75,81 +75,90 @@ const DataTab: React.FC = () => {
       contentContainerStyle={styles.pageScrollContent}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.screenTitle}>Data sessions</Text>
-      <Text style={styles.screenSubtitle}>
-        Each record represents a building session with Vibration, Audio, and Meta tests.
-      </Text>
+      {/* push content down */}
+      <View style={{ marginTop: 40 }}>
+        <Text style={styles.screenTitle}>Data sessions</Text>
+        <Text style={styles.screenSubtitle}>
+          Each record represents a building session with Vibration, Audio, and Meta tests.
+        </Text>
 
-      <View style={styles.cardList}>
-        {SESSIONS.map(session => (
-          <Pressable key={session.id} style={styles.listRow}>
-            <View style={styles.listRowIconCircle}>
-              <Text style={styles.listRowIconText}>
-                {session.name.charAt(0).toUpperCase()}
-              </Text>
-            </View>
+        <View style={styles.cardList}>
+          {SESSIONS.map(session => (
+            <Pressable key={session.id} style={styles.listRow}>
+              <View style={styles.listRowIconCircle}>
+                <Text style={styles.listRowIconText}>
+                  {session.name.charAt(0).toUpperCase()}
+                </Text>
+              </View>
 
-            <View style={styles.listRowText}>
-              <Text style={styles.listRowTitle}>{session.name}</Text>
-              <Text style={styles.listRowSub}>
-                {session.city} · {session.area}
-              </Text>
+              <View style={styles.listRowText}>
+                <Text style={styles.listRowTitle}>{session.name}</Text>
+                <Text style={styles.listRowSub}>
+                  {session.city} · {session.area}
+                </Text>
 
-              {/* test chips – using timeframeChip styles so we don’t add more */}
-              <View style={{ flexDirection: 'row', marginTop: 8, gap: 8 }}>
-                <View
-                  style={[
-                    styles.timeframeChip,
-                    session.tests.vibration && styles.timeframeChipSelected,
-                  ]}
-                >
-                  <Text
+                {/* test chips */}
+                <View style={{ flexDirection: 'row', marginTop: 8, gap: 8 }}>
+                  <View
                     style={[
-                      styles.timeframeChipLabel,
-                      session.tests.vibration && styles.timeframeChipLabelSelected,
+                      styles.timeframeChip,
+                      session.tests.vibration && styles.timeframeChipSelected,
                     ]}
                   >
-                    {session.tests.vibration ? '✓ Vibration' : '– Vibration'}
-                  </Text>
-                </View>
+                    <Text
+                      style={[
+                        styles.timeframeChipLabel,
+                        session.tests.vibration &&
+                          styles.timeframeChipLabelSelected,
+                      ]}
+                    >
+                      {session.tests.vibration ? '✓ Vibration' : '– Vibration'}
+                    </Text>
+                  </View>
 
-                <View
-                  style={[
-                    styles.timeframeChip,
-                    session.tests.audio && styles.timeframeChipSelected,
-                  ]}
-                >
-                  <Text
+                  <View
                     style={[
-                      styles.timeframeChipLabel,
-                      session.tests.audio && styles.timeframeChipLabelSelected,
+                      styles.timeframeChip,
+                      session.tests.audio && styles.timeframeChipSelected,
                     ]}
                   >
-                    {session.tests.audio ? '✓ Audio' : '– Audio'}
-                  </Text>
-                </View>
+                    <Text
+                      style={[
+                        styles.timeframeChipLabel,
+                        session.tests.audio &&
+                          styles.timeframeChipLabelSelected,
+                      ]}
+                    >
+                      {session.tests.audio ? '✓ Audio' : '– Audio'}
+                    </Text>
+                  </View>
 
-                <View
-                  style={[
-                    styles.timeframeChip,
-                    session.tests.meta && styles.timeframeChipSelected,
-                  ]}
-                >
-                  <Text
+                  <View
                     style={[
-                      styles.timeframeChipLabel,
-                      session.tests.meta && styles.timeframeChipLabelSelected,
+                      styles.timeframeChip,
+                      session.tests.meta && styles.timeframeChipSelected,
                     ]}
                   >
-                    {session.tests.meta ? '✓ Meta' : '– Meta'}
-                  </Text>
+                    <Text
+                      style={[
+                        styles.timeframeChipLabel,
+                        session.tests.meta && styles.timeframeChipLabelSelected,
+                      ]}
+                    >
+                      {session.tests.meta ? '✓ Meta' : '– Meta'}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
 
-            <Feather name="chevron-right" size={18} style={styles.listRowChevron} />
-          </Pressable>
-        ))}
+              <Feather
+                name="chevron-right"
+                size={18}
+                style={styles.listRowChevron}
+              />
+            </Pressable>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );

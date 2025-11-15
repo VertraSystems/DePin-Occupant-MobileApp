@@ -1,6 +1,7 @@
 // components/screens/MnemonicScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { styles } from '../../style';
 import { PrimaryButton, SecondaryButton } from '../Buttons';
 
@@ -14,8 +15,20 @@ type Props = {
 
 const MnemonicScreen: React.FC<Props> = ({ mnemonic, onConfirm, onSkip }) => {
   const [revealed, setRevealed] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleShow = () => setRevealed(true);
+
+  const handleCopy = async () => {
+    try {
+      await Clipboard.setStringAsync(mnemonic.join(' '));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (e) {
+      // swallow for now – no UI error handling needed for demo
+      setCopied(false);
+    }
+  };
 
   return (
     <View style={styles.screenRoot}>
@@ -45,21 +58,57 @@ const MnemonicScreen: React.FC<Props> = ({ mnemonic, onConfirm, onSkip }) => {
             </Pressable>
           </View>
         ) : (
-          // Revealed 12/24-word grid
-          <ScrollView
-            style={styles.mnemonicScroll}
-            contentContainerStyle={styles.mnemonicScrollContent}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.mnemonicGrid}>
-              {mnemonic.map((word, idx) => (
-                <View key={idx} style={styles.mnemonicWordBox}>
-                  <Text style={styles.mnemonicIndex}>{idx + 1}</Text>
-                  <Text style={styles.mnemonicWord}>{word}</Text>
-                </View>
-              ))}
+          <>
+            {/* Copy button (shown only when revealed) */}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                paddingHorizontal: 16,
+                paddingTop: 10,
+              }}
+            >
+              <Pressable
+                onPress={handleCopy}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: '#1f2937',
+                  backgroundColor: '#050b11',
+                }}
+              >
+                <Text
+                  style={{
+                    color: '#a5b4fc',
+                    fontSize: 13,
+                    fontWeight: '500',
+                  }}
+                >
+                  {copied ? 'Copied!' : 'Copy phrase'}
+                </Text>
+              </Pressable>
             </View>
-          </ScrollView>
+
+            {/* Revealed 12/24-word grid */}
+            <ScrollView
+              style={styles.mnemonicScroll}
+              contentContainerStyle={styles.mnemonicScrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.mnemonicGrid}>
+                {mnemonic.map((word, idx) => (
+                  <View key={idx} style={styles.mnemonicWordBox}>
+                    <Text style={styles.mnemonicIndex}>{idx + 1}</Text>
+                    <Text style={styles.mnemonicWord}>{word}</Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          </>
         )}
       </View>
 
